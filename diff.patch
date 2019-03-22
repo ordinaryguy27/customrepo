@@ -1,0 +1,38 @@
+diff --git a/app/src/main/java/com/corpay/mwallet/app/ui/react_core/core/BaseReactActivity.java b/app/src/main/java/com/corpay/mwallet/app/ui/react_core/core/BaseReactActivity.java
+index 2a7c520..0b9a192 100644
+--- a/app/src/main/java/com/corpay/mwallet/app/ui/react_core/core/BaseReactActivity.java
++++ b/app/src/main/java/com/corpay/mwallet/app/ui/react_core/core/BaseReactActivity.java
+@@ -76,6 +76,8 @@ public abstract class BaseReactActivity extends BaseActivity implements DefaultH
+     @BindView(R.id.tvLoading)
+     TextView tvLoading;
+ 
++    private boolean mReactInstanceManagerAlive;
++
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+@@ -130,7 +132,7 @@ public abstract class BaseReactActivity extends BaseActivity implements DefaultH
+     protected void onPause() {
+         super.onPause();
+ 
+-        if (mReactInstanceManager != null) {
++        if (mReactInstanceManager != null && mReactInstanceManagerAlive) {
+             mReactInstanceManager.onHostPause(this);
+ 
+         }
+@@ -146,6 +148,7 @@ public abstract class BaseReactActivity extends BaseActivity implements DefaultH
+ 
+         if (mReactInstanceManager != null) {
+             mReactInstanceManager.onHostResume(this, this);
++            mReactInstanceManagerAlive = true;
+         }
+     }
+ 
+@@ -154,6 +157,7 @@ public abstract class BaseReactActivity extends BaseActivity implements DefaultH
+         super.onDestroy();
+ 
+         if (mReactInstanceManager != null) {
++            mReactInstanceManagerAlive = false;
+             mReactInstanceManager.onHostDestroy(this);
+             mReactInstanceManager.destroy();
+             WalletReactInstanceManager.release();
